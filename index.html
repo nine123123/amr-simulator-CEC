@@ -2,25 +2,44 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport overflow-x: hidden;  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced AMR Membrane Simulator</title>  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap');
+
+    :root {
+      --green-main: #15803d;
+      --blue-main: #0284c7;
+      --gold-main: #ca8a04;
+      --panel-border: rgba(34, 197, 94, 0.28);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Sarabun', sans-serif;
+      color: var(--text-main);
+      overflow-x: hidden;
       min-height: 100vh;
       background:
-        linear-gradient(
-          rgba(248, 250, 252, 0.38),
-          rgba(236, 253, 245, 0.46)
-        ),
-        url("background.png");
-      background-size: cover;
-      background-position: center top;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.16), transparent 32%),
+        radial-gradient(circle at top right, rgba(14, 165, 233, 0.14), transparent 34%),
+        linear-gradient(135deg, #f8fafc 0%, #e0f2fe 45%, #dcfce7 100%);
     }
 
     .glass-panel {
       background: linear-gradient(
         145deg,
-        rgba(255, 255, 255, 0.74),
-        rgba(236, 253, 245, 0.62)
+        rgba(255, 255, 255, 0.78),
+        rgba(236, 253, 245, 0.66)
       );
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -43,9 +62,44 @@
       padding: clamp(14px, 2vw, 24px);
     }
 
-    .header-logo-wrap {
+    .top-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("S__23863309.jpg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: min(720px, 80vw) auto;
+      opacity: 0.15;
+      filter: saturate(1.12) contrast(1.04);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .top-header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(14, 165, 233, 0.12), transparent 58%),
+        linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.78),
+          rgba(236, 253, 245, 0.34),
+          rgba(255, 255, 255, 0.78)
+        );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .header-logo-wrap,
+    .header-title-wrap,
+    .header-actions {
       position: relative;
       z-index: 2;
+    }
+
+    .header-logo-wrap {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -53,15 +107,17 @@
     }
 
     .header-logo-wrap img {
-      width: clamp(130px, 15vw, 230px);
-      max-height: 105px;
+      width: clamp(110px, 12vw, 170px);
+      max-height: 78px;
       object-fit: contain;
       filter: drop-shadow(0 8px 18px rgba(22, 101, 52, 0.18));
+      background: rgba(255,255,255,0.76);
+      border-radius: 0.7rem;
+      padding: 6px 10px;
+      border: 1px solid rgba(34, 197, 94, 0.18);
     }
 
     .header-title-wrap {
-      position: relative;
-      z-index: 2;
       text-align: center;
       display: flex;
       justify-content: center;
@@ -85,8 +141,6 @@
     }
 
     .header-actions {
-      position: relative;
-      z-index: 2;
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -188,7 +242,7 @@
       filter: drop-shadow(0 0 5px #0284c7);
     }
 
-    /* ===== Process / Cards ===== */
+    /* ===== General UI ===== */
     h2,
     .font-semibold,
     .font-bold {
@@ -216,19 +270,6 @@
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(34, 197, 94, 0.20);
       box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35);
-    }
-
-    .bg-slate-900\/70,
-    .bg-slate-950\/80,
-    .bg-slate-900\/80,
-    .bg-slate-900 {
-      background-color: rgba(255, 255, 255, 0.68) !important;
-    }
-
-    .border-cyan-900\/40,
-    .border-cyan-900\/50,
-    .border-cyan-900\/60 {
-      border-color: rgba(34, 197, 94, 0.24) !important;
     }
 
     select {
@@ -339,7 +380,7 @@
     @media (max-width: 1024px) {
       .top-header {
         grid-template-columns: 1fr;
-        min-height: 170px;
+        min-height: 178px;
         text-align: center;
       }
 
@@ -352,7 +393,8 @@
       }
 
       .header-logo-wrap img {
-        width: clamp(135px, 35vw, 210px);
+        width: clamp(120px, 35vw, 180px);
+        max-height: 74px;
       }
 
       .header-title-wrap h1 {
@@ -364,7 +406,6 @@
     @media (max-width: 640px) {
       body {
         padding: 0.65rem !important;
-        background-attachment: scroll;
       }
 
       .glass-panel {
@@ -372,14 +413,14 @@
       }
 
       .top-header {
-        min-height: 185px;
+        min-height: 190px;
         padding: 14px 10px;
         gap: 10px;
       }
 
       .header-logo-wrap img {
-        width: clamp(120px, 55vw, 180px);
-        max-height: 76px;
+        width: clamp(105px, 50vw, 160px);
+        max-height: 68px;
       }
 
       .header-title-wrap h1 {
@@ -475,7 +516,7 @@
 
     <!-- Left: Process Diagram -->
     <div class="glass-panel p-4 lg:col-span-5 flex flex-col">
-      <h2 class="text-lg font-semibold mb-2 border-b border-cyan-900/60 pb-1">
+      <h2 class="text-lg font-semibold mb-2 border-b border-green-700/20 pb-1">
         <i class="fas fa-project-diagram mr-2 text-sky-500"></i>Process Diagram
       </h2>
 
@@ -566,7 +607,7 @@
     <!-- Middle: Controls -->
     <div class="glass-panel p-4 lg:col-span-4 flex flex-col gap-4">
       <div>
-        <h2 class="text-lg font-semibold mb-2 border-b border-cyan-900/60 pb-1">
+        <h2 class="text-lg font-semibold mb-2 border-b border-green-700/20 pb-1">
           <i class="fas fa-gamepad mr-2 text-green-600"></i>Control Panel
         </h2>
 
@@ -586,7 +627,7 @@
       </div>
 
       <div>
-        <h2 class="text-lg font-semibold mb-2 border-b border-cyan-900/60 pb-1">
+        <h2 class="text-lg font-semibold mb-2 border-b border-green-700/20 pb-1">
           <i class="fas fa-vials mr-2 text-yellow-500"></i>Scenario Mode
         </h2>
 
@@ -612,7 +653,7 @@
     <!-- Right: Economic Impact -->
     <div class="glass-panel p-4 lg:col-span-3 flex flex-col gap-4">
       <div class="flex-grow">
-        <h2 class="text-lg font-semibold mb-2 border-b border-cyan-900/60 pb-1">
+        <h2 class="text-lg font-semibold mb-2 border-b border-green-700/20 pb-1">
           <i class="fas fa-chart-line mr-2 text-green-600"></i>Economic Impact
         </h2>
 
@@ -647,7 +688,7 @@
 
   <!-- Chart -->
   <div class="glass-panel chart-panel p-4 flex-grow flex flex-col min-h-[300px]">
-    <h2 class="text-lg font-semibold mb-2 border-b border-cyan-900/60 pb-1">
+    <h2 class="text-lg font-semibold mb-2 border-b border-green-700/20 pb-1">
       <i class="fas fa-chart-area mr-2 text-sky-500"></i>Real-time Trending Graphs
     </h2>
 
@@ -1202,29 +1243,3 @@
   </script>
 </body>
 </html>
-  <title>Advanced AMR Membrane Simulator</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap');
-
-    :root {
-      --green-main: #15803d;
-      --green-soft: rgba(34, 197, 94, 0.24);
-      --blue-main: #0284c7;
-      --gold-main: #ca8a04;
-      --panel-border: rgba(34, 197, 94, 0.28);
-      --text-main: #0f172a;
-      --text-muted: #475569;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Sarabun', sans-serif;
-      color: var(--text-main);
